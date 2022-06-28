@@ -1,0 +1,46 @@
+plugins {
+    id 'org.beryx.jlink' version '2.25.0'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(18))
+    }
+}
+application {
+    mainClass = 'info.lma1980.example.Helloworld'
+    mainModule = 'picocli.jlink.example.main'
+    applicationName = 'helloworld'
+}
+dependencies {
+    implementation 'info.picocli:picocli:4.6.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    annotationProcessor 'info.picocli:picocli-codegen:4.6.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+}
+test {
+    useJUnitPlatform()
+}
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ["-Aproject=${project.group}/${project.name}"]
+}
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'picocli.jlink.example.main',
+                'Main-Class': 'info.lma1980.examples.Helloworld'
+    }
+}
+tasks.jar.enabled = true
+jlink {
+    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+    launcher{
+        name = 'helloworld'
+    }
+}
